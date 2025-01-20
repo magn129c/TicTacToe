@@ -13,6 +13,9 @@ void draw() {
   drawLines();
   drawXAndO();
   
+  if (gameOver) {
+    drawLineForWinner();
+  }
 }
 
 void mousePressed() {
@@ -23,6 +26,14 @@ void mousePressed() {
 
   if (board[row][col] == 0) {
     board[row][col] = currentPlayer;
+    if (hasWon(currentPlayer)) {
+      gameOver = true;
+      winner = currentPlayer;
+    } else if (isBoardFilled()) {
+      gameOver = true; // Tie
+    } else {
+      currentPlayer = (currentPlayer == 1) ? 2 : 1;
+    }
   }
 }
 
@@ -46,5 +57,51 @@ void drawXAndO() {
         ellipse(x, y, 200, 200);
       }
     }
+  }
+}
+
+boolean hasWon(int player) {
+  for (int i = 0; i < 3; i++) {
+    if ((board[i][0] == player && board[i][1] == player && board[i][2] == player) ||
+        (board[0][i] == player && board[1][i] == player && board[2][i] == player)) {
+      return true;
+    }
+  }
+  if ((board[0][0] == player && board[1][1] == player && board[2][2] == player) ||
+      (board[0][2] == player && board[1][1] == player && board[2][0] == player)) {
+    return true;
+  }
+  return false;
+}
+
+boolean isBoardFilled() {
+  for (int row = 0; row < 3; row++) {
+    for (int col = 0; col < 3; col++) {
+      if (board[row][col] == 0) return false;
+    }
+  }
+  return true;
+}
+
+void drawLineForWinner() {
+  stroke(255, 0, 0);
+  for (int i = 0; i < 3; i++) {
+    if (board[i][0] == winner && board[i][1] == winner && board[i][2] == winner) {
+      line(0, i * 300 + 150, width, i * 300 + 150);
+      stroke(0, 0, 0);
+      return;
+    }
+    if (board[0][i] == winner && board[1][i] == winner && board[2][i] == winner) {
+      line(i * 300 + 150, 0, i * 300 + 150, height);
+      stroke(0, 0, 0);
+      return;
+    }
+  }
+  if (board[0][0] == winner && board[1][1] == winner && board[2][2] == winner) {
+    line(0, 0, width, height);
+    stroke(0, 0, 0);
+  } else if (board[0][2] == winner && board[1][1] == winner && board[2][0] == winner) {
+    line(width, 0, 0, height);
+    stroke(0, 0, 0);
   }
 }
