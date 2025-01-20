@@ -14,7 +14,9 @@ void draw() {
   drawXAndO();
   
   if (gameOver) {
+    strokeWeight(3);
     drawLineForWinner();
+    strokeWeight(10);
   }
 }
 
@@ -26,11 +28,11 @@ void mousePressed() {
 
   if (board[row][col] == 0) {
     board[row][col] = currentPlayer;
-    if (hasWon(currentPlayer)) {
+    if (hasWon(currentPlayer)) { // Player winning
       gameOver = true;
       winner = currentPlayer;
-    } else if (isBoardFilled()) {
-      gameOver = true; // Tie
+    } else if (isTie()) { // Tie
+      gameOver = true;
     } else {
       currentPlayer = (currentPlayer == 1) ? 2 : 1;
     }
@@ -62,19 +64,17 @@ void drawXAndO() {
 
 boolean hasWon(int player) {
   for (int i = 0; i < 3; i++) {
-    if ((board[i][0] == player && board[i][1] == player && board[i][2] == player) ||
-        (board[0][i] == player && board[1][i] == player && board[2][i] == player)) {
+    if ((board[i][0] == player && board[i][1] == player && board[i][2] == player) || (board[0][i] == player && board[1][i] == player && board[2][i] == player)) {
       return true;
     }
   }
-  if ((board[0][0] == player && board[1][1] == player && board[2][2] == player) ||
-      (board[0][2] == player && board[1][1] == player && board[2][0] == player)) {
+  if ((board[0][0] == player && board[1][1] == player && board[2][2] == player) || (board[0][2] == player && board[1][1] == player && board[2][0] == player)) {
     return true;
   }
   return false;
 }
 
-boolean isBoardFilled() {
+boolean isTie() {
   for (int row = 0; row < 3; row++) {
     for (int col = 0; col < 3; col++) {
       if (board[row][col] == 0) return false;
